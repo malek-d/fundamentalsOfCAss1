@@ -231,7 +231,7 @@ void dataOperation(char * o)
     else if(strcmp(o, "r" ) == 0)
     {
         fp = fopen(DB_NAME, "r"); 
-        char currentline[100];
+        char currentline[33];
         if(fp == NULL)
         {
             printf("File error");
