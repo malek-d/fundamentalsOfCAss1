@@ -76,8 +76,10 @@ int main(void)
 
     print_menu();
     int selection = getSelection();
-    handleInput(selection);
-
+    if(selection != -1)
+    {
+        handleInput(selection);
+    }
     return 0;
 }
 
@@ -117,8 +119,10 @@ int getSelection(){
     }
     else
     {
+        return -1;
         printf("Invalid input, not a number\n");
     }
+    return -1;
 }
 
 void handleInput(int input)
@@ -135,8 +139,6 @@ void handleInput(int input)
 void addFlight()
 {
     flight_t newFlight;
-    date_time_t flightTimes;
-    char flightCode[MAX_FLIGHTCODE_LEN+1];
     int month, day, hour, minute;
     printf("Enter flight code>");
     scanf("%s", newFlight.flightCode);
@@ -169,17 +171,20 @@ void addFlight()
 
 void printFlights()
 {   
+    int i = 0;
     if(numFlights == 0)
     {
         printf("No flights found\n");
     }else
     {
-        for (int i = 0; i < numFlights; ++i) 
+        while(i < numFlights) 
         {
             printf("Flight number: %d \n", i);
             printf("Depature Info (Month Day Hour Minute): %d %d %d %d \n",
             flights[i].departure_dt.month, flights[i].departure_dt.day, 
             flights[i].departure_dt.hour, flights[i].departure_dt.minute);
+
+            ++i;
         }
     }
 }
