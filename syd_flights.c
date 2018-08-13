@@ -59,6 +59,7 @@ int getSelection();
 void handleInput(int input);
 void addFlight();
 void printFlights();
+void dataOperation(char * o);
 
 /*******************************************************************************
  * Global Variables
@@ -99,7 +100,7 @@ void print_menu (void)
     "3. save the flights to the database file\n"
     "4. load the flights from the database file\n"
     "5. exit the program\n"
-    "Enter choice (number between 1-5)>\n");
+    "Enter choice (number between 1-5)> ");
 }
 
 int getSelection(){
@@ -127,12 +128,14 @@ int getSelection(){
 
 void handleInput(int input)
 {
+    char * write = "w";
+    char * read = "r";
     switch(input) {
         case 1: addFlight(); break;
         case 2: printFlights(); break;
-        case 3: printf("You want to save the flights to the database file\n"); break;
-        case 4: printf("You want load the flights from the database file\n"); break;
-        case 5: printf("Program terminated\n"); exit(0); break;
+        case 3: dataOperation(write); break;
+        case 4: dataOperation(read); break;
+        case 5: exit(0); break;
     }
 }
 
@@ -152,16 +155,16 @@ void addFlight()
     newFlight.departure_dt.hour = hour;
     newFlight.departure_dt.minute = minute;
     
-    printf("Enter arrival cite code>");
+    printf("Enter arrival city code> ");
     scanf("%s", newFlight.arrival_city);
 
     printf("Enter arrival info. \n"
     "Enter month, date, hour and minute separated by spaces> ");
     scanf("%d %d %d %d", &month, &day, &hour, &minute);
-    newFlight.departure_dt.month = month;
-    newFlight.departure_dt.day = day;
-    newFlight.departure_dt.hour = hour;
-    newFlight.departure_dt.minute = minute;
+    newFlight.arrival_dt.month = month;
+    newFlight.arrival_dt.day = day;
+    newFlight.arrival_dt.hour = hour;
+    newFlight.arrival_dt.minute = minute;
 
     flights[numFlights] = newFlight;
     ++numFlights;
@@ -171,26 +174,76 @@ void addFlight()
 
 void printFlights()
 {   
-    int i = 0;
-    if(numFlights == 0)
+    char arrival_city[MAX_CITYCODE_LEN+1];
+    printf("Enter arrival city code or enter * to show all destinations> ");
+    scanf("%s", arrival_city);
+
+    printf("Flight Origin          Destination    \n");
+    printf("------ --------------- ---------------\n");
+    if(strcmp(arrival_city, "*" ) == 0)
     {
-        printf("No flights found\n");
+        int i = 0;
+        while(i < numFlights) 
+        {
+            printf("%-7s", flights[i].flightCode);
+            printf("SYD %d-%d %d:%d ", flights[i].departure_dt.month, flights[i].departure_dt.day, flights[i].departure_dt.hour, flights[i].departure_dt.minute );
+            printf("%s %d-%d %d:%d\n", flights[i].arrival_city, flights[i].arrival_dt.month, flights[i].arrival_dt.day, flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
+            ++i;
+        }
     }
     else
     {
-        while(i < numFlights) 
+        int i = 0;
+        while(i < numFlights)
         {
-            printf("Flight number: %d \n", i);
-            printf("Destination %s\n", flights[i].arrival_city);
-            printf("Depature Date (Month Day Hour Minute): %d %d %d %d \n",
-            flights[i].departure_dt.month, flights[i].departure_dt.day, 
-            flights[i].departure_dt.hour, flights[i].departure_dt.minute);
-            printf("Arrival Date (Month Day Hour Minute): %d %d %d %d \n",
+            if(strcmp(arrival_city, flights[i].arrival_city) == 0)
+            {
+                printf("%-7s", flights[i].flightCode);
+                printf("SYD %d-%d %d:%d ", flights[i].departure_dt.month, flights[i].departure_dt.day, flights[i].departure_dt.hour, flights[i].departure_dt.minute );
+                printf("%s %d-%d %d:%d\n", flights[i].arrival_city, flights[i].arrival_dt.month, flights[i].arrival_dt.day, flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
+            }
+            ++i;
+        }
+    }
+    main();
+}
+
+void dataOperation(char * o)
+{
+    FILE *fp;
+    if(strcmp(o, "w" ) == 0)
+    {
+        fp = fopen(DB_NAME, "w");   
+        int i = 0;
+
+        while(i < numFlights)
+        {
+            fprintf(fp, "%s %d %d %d %d %s %d %d %d %d\n", 
+            flights[i].flightCode, flights[i].departure_dt.month, 
+            flights[i].departure_dt.day, flights[i].departure_dt.hour, 
+            flights[i].departure_dt.minute, flights[i].arrival_city, 
             flights[i].arrival_dt.month, flights[i].arrival_dt.day, 
             flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
             ++i;
         }
+        fclose(fp);
     }
+    else if(strcmp(o, "r" ) == 0)
+    {
+        fp = fopen(DB_NAME, "r"); 
+        char currentline[100];
+        if(fp == NULL)
+        {
+            printf("File error");
+        }
+        else
+        {
+            while (fgets(currentline, sizeof(currentline), fp) != NULL) {
+                fprintf(stderr, "got line: %s\n", currentline);
+                /* Do something with `currentline` */
+            }
+        }
+        fclose(fp);
+    }
+    main();
 }
-
-
