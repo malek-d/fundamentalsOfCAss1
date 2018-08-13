@@ -57,17 +57,26 @@ typedef struct flight flight_t;
 void print_menu (void);
 int getSelection();
 void handleInput(int input);
+void addFlight();
+void printFlights();
+
+/*******************************************************************************
+ * Global Variables
+*******************************************************************************/
+ flight_t flights [MAX_NUM_FLIGHTS];
+ int numFlights = 0;
+
 /*******************************************************************************
  * Main
 *******************************************************************************/
 int main(void)
 {
     /* TODO */
-    flight_t flights [MAX_NUM_FLIGHTS];
+   
 
     print_menu();
     int selection = getSelection();
-
+    handleInput(selection);
 
     return 0;
 }
@@ -115,11 +124,63 @@ int getSelection(){
 void handleInput(int input)
 {
     switch(input) {
-        case 1: printf("You want to add a flight\n"); break;
-        case 2: printf("You want to list all flights to a destination\n"); break;
+        case 1: addFlight(); break;
+        case 2: printFlights(); break;
         case 3: printf("You want to save the flights to the database file\n"); break;
         case 4: printf("You want load the flights from the database file\n"); break;
         case 5: printf("Program terminated\n"); exit(0); break;
+    }
+}
+
+void addFlight()
+{
+    flight_t newFlight;
+    date_time_t flightTimes;
+    char flightCode[MAX_FLIGHTCODE_LEN+1];
+    int month, day, hour, minute;
+    printf("Enter flight code>");
+    scanf("%s", newFlight.flightCode);
+    
+
+    printf("Enter departure info for the flight leaving SYD.\n" 
+    "Enter month, date, hour and minute separated by spaces> ");
+    scanf("%d %d %d %d", &month, &day, &hour, &minute);
+    newFlight.departure_dt.month = month;
+    newFlight.departure_dt.day = day;
+    newFlight.departure_dt.hour = hour;
+    newFlight.departure_dt.minute = minute;
+    
+    printf("Enter arrival cite code>");
+    scanf("%s", newFlight.arrival_city);
+
+    printf("Enter arrival info. \n"
+    "Enter month, date, hour and minute separated by spaces> ");
+    scanf("%d %d %d %d", &month, &day, &hour, &minute);
+    newFlight.departure_dt.month = month;
+    newFlight.departure_dt.day = day;
+    newFlight.departure_dt.hour = hour;
+    newFlight.departure_dt.minute = minute;
+
+    flights[numFlights] = newFlight;
+    ++numFlights;
+    
+    main();
+}
+
+void printFlights()
+{   
+    if(numFlights == 0)
+    {
+        printf("No flights found\n");
+    }else
+    {
+        for (int i = 0; i < numFlights; ++i) 
+        {
+            printf("Flight number: %d \n", i);
+            printf("Depature Info (Month Day Hour Minute): %d %d %d %d \n",
+            flights[i].departure_dt.month, flights[i].departure_dt.day, 
+            flights[i].departure_dt.hour, flights[i].departure_dt.minute);
+        }
     }
 }
 
