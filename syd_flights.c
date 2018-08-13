@@ -175,15 +175,19 @@ void printFlights()
     if(numFlights == 0)
     {
         printf("No flights found\n");
-    }else
+    }
+    else
     {
         while(i < numFlights) 
         {
             printf("Flight number: %d \n", i);
-            printf("Depature Info (Month Day Hour Minute): %d %d %d %d \n",
+            printf("Destination %s\n", flights[i].arrival_city);
+            printf("Depature Date (Month Day Hour Minute): %d %d %d %d \n",
             flights[i].departure_dt.month, flights[i].departure_dt.day, 
             flights[i].departure_dt.hour, flights[i].departure_dt.minute);
-
+            printf("Arrival Date (Month Day Hour Minute): %d %d %d %d \n",
+            flights[i].arrival_dt.month, flights[i].arrival_dt.day, 
+            flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
             ++i;
         }
     }
