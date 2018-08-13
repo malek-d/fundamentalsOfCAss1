@@ -72,9 +72,6 @@ void dataOperation(char * o);
 *******************************************************************************/
 int main(void)
 {
-    /* TODO */
-   
-
     print_menu();
     int selection = getSelection();
     if(selection != -1)
@@ -238,9 +235,58 @@ void dataOperation(char * o)
         }
         else
         {
+            flight_t databaseFlights[MAX_NUM_FLIGHTS];
+            int currentFlights = 0;
             while (fgets(currentline, sizeof(currentline), fp) != NULL) {
-                fprintf(stderr, "got line: %s\n", currentline);
-                /* Do something with `currentline` */
+                /* Use tracker to determine where we are in string and point parser to first segment of currentline based on whitespace */
+                int tracker = 0;
+                char * parser = strtok(currentline, " ");
+                char *delimitedWord[50];
+                while(parser != NULL)
+                {
+                    delimitedWord[tracker++] = parser;
+                    parser = strtok (NULL, " ");
+                }
+                flight_t newFlight;
+                strcpy(newFlight.flightCode, delimitedWord[0]);
+
+                int charToInt = atoi(delimitedWord[1]);
+                newFlight.departure_dt.month = charToInt;
+
+                charToInt = atoi(delimitedWord[2]);
+                newFlight.departure_dt.day = charToInt;
+
+                charToInt = atoi(delimitedWord[3]);
+                newFlight.departure_dt.hour = charToInt;
+
+                charToInt = atoi(delimitedWord[4]);
+                newFlight.departure_dt.minute = charToInt;
+                
+                strcpy(newFlight.arrival_city,delimitedWord[5]);
+
+                charToInt = atoi(delimitedWord[6]);
+                newFlight.arrival_dt.month = charToInt;
+
+                charToInt = atoi(delimitedWord[7]);
+                newFlight.arrival_dt.day = charToInt;
+
+                charToInt = atoi(delimitedWord[8]);
+                newFlight.arrival_dt.hour = charToInt;
+
+                charToInt = atoi(delimitedWord[9]);
+                newFlight.arrival_dt.minute = charToInt;
+                databaseFlights[currentFlights++] = newFlight; 
+            }
+            if(currentFlights <= MAX_NUM_FLIGHTS)
+            {
+                memset(flights, 0, sizeof(flights));
+                int i = 0;
+                while(i < currentFlights)
+                {
+                    flights[i] = databaseFlights[i];
+                    ++i;
+                }
+                numFlights = currentFlights;
             }
         }
         fclose(fp);
