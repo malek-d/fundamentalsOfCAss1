@@ -74,11 +74,12 @@ int main(void)
 {
     print_menu();
     int selection = getSelection();
-    if(selection != -1)
+    if(selection == -1)
     {
-        handleInput(selection);
+        exit(0);
     }
-    return 0;
+    handleInput(selection);
+    
 }
 
 /*******************************************************************************
@@ -101,13 +102,14 @@ void print_menu (void)
 }
 
 int getSelection(){
-    int input;
+    int input = 0;
 
     if (scanf("%d", &input) == 1)
     {
-        if(input < 1 || input > 6)
+        if(input < 1 || input > 5)
         {
             printf("Invalid input, please provide a number between 1-5\n");
+            return -1;
         }
         else
         {
@@ -117,8 +119,9 @@ int getSelection(){
     }
     else
     {
-        return -1;
         printf("Invalid input, not a number\n");
+        return -1;
+        
     }
     return -1;
 }
@@ -183,8 +186,13 @@ void printFlights()
         while(i < numFlights) 
         {
             printf("%-7s", flights[i].flightCode);
-            printf("SYD %d-%d %d:%d ", flights[i].departure_dt.month, flights[i].departure_dt.day, flights[i].departure_dt.hour, flights[i].departure_dt.minute );
-            printf("%s %d-%d %d:%d\n", flights[i].arrival_city, flights[i].arrival_dt.month, flights[i].arrival_dt.day, flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
+            printf("SYD %d-%d %d:%d ", flights[i].departure_dt.month,
+            flights[i].departure_dt.day, flights[i].departure_dt.hour, 
+            flights[i].departure_dt.minute );
+            
+            printf("%s %d-%d %d:%d\n", flights[i].arrival_city, 
+            flights[i].arrival_dt.month, flights[i].arrival_dt.day, 
+            flights[i].arrival_dt.hour, flights[i].arrival_dt.minute);
             ++i;
         }
     }
@@ -238,7 +246,8 @@ void dataOperation(char * o)
             flight_t databaseFlights[MAX_NUM_FLIGHTS];
             int currentFlights = 0;
             while (fgets(currentline, sizeof(currentline), fp) != NULL) {
-                /* Use tracker to determine where we are in string and point parser to first segment of currentline based on whitespace */
+                /* Use tracker to determine where we are in string and point
+                parser to first segment of currentline based on whitespace */
                 int tracker = 0;
                 char * parser = strtok(currentline, " ");
                 char *delimitedWord[50];
