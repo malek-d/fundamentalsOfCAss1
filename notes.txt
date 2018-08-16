@@ -1,0 +1,4 @@
+add checker for flight code
+handle invalid date inputs
+refactor global variables (ez)
+test for storing and retrieving values

@@ -76,10 +76,10 @@ int main(void)
     int selection = getSelection();
     if(selection == -1)
     {
-        exit(0);
+        main();	
     }
     handleInput(selection);
-    
+    return 0;
 }
 
 /*******************************************************************************
@@ -98,7 +98,7 @@ void print_menu (void)
     "3. save the flights to the database file\n"
     "4. load the flights from the database file\n"
     "5. exit the program\n"
-    "Enter choice (number between 1-5)> ");
+    "Enter choice (number between 1-5)>\n");
 }
 
 int getSelection(){
@@ -108,7 +108,7 @@ int getSelection(){
     {
         if(input < 1 || input > 5)
         {
-            printf("Invalid input, please provide a number between 1-5\n");
+            printf("Invalid choice\n");
             return -1;
         }
         else
@@ -143,23 +143,22 @@ void addFlight()
 {
     flight_t newFlight;
     int month, day, hour, minute;
-    printf("Enter flight code>");
+    printf("Enter flight code>\n");
     scanf("%s", newFlight.flightCode);
-    
 
     printf("Enter departure info for the flight leaving SYD.\n" 
-    "Enter month, date, hour and minute separated by spaces> ");
+    "Enter month, date, hour and minute separated by spaces>\n");
     scanf("%d %d %d %d", &month, &day, &hour, &minute);
     newFlight.departure_dt.month = month;
     newFlight.departure_dt.day = day;
     newFlight.departure_dt.hour = hour;
     newFlight.departure_dt.minute = minute;
     
-    printf("Enter arrival city code> ");
+    printf("Enter arrival city code>\n");
     scanf("%s", newFlight.arrival_city);
 
-    printf("Enter arrival info. \n"
-    "Enter month, date, hour and minute separated by spaces> ");
+    printf("Enter arrival info.\n"
+    "Enter month, date, hour and minute separated by spaces>\n");
     scanf("%d %d %d %d", &month, &day, &hour, &minute);
     newFlight.arrival_dt.month = month;
     newFlight.arrival_dt.day = day;
@@ -175,10 +174,10 @@ void addFlight()
 void printFlights()
 {   
     char arrival_city[MAX_CITYCODE_LEN+1];
-    printf("Enter arrival city code or enter * to show all destinations> ");
+    printf("Enter arrival city code or enter * to show all destinations>\n");
     scanf("%s", arrival_city);
 
-    printf("Flight Origin          Destination    \n");
+    printf("Flight Origin          Destination\n");
     printf("------ --------------- ---------------\n");
     if(strcmp(arrival_city, "*" ) == 0)
     {
